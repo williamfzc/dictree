@@ -1,11 +1,11 @@
-from dictree import Compiler, Tree
+from planter import Compiler, Tree
 
 
 data = {
-        "a": {"b": {"e": {"x": {"y": {"z": "ok"}}}}, "c": "d"},
-        "g": "h",
-        "i": {"j": {"k": {"l": "m"}}},
-    }
+    "a": {"b": {"e": {"x": {"y": {"z": "ok"}}}}, "c": "d"},
+    "g": "h",
+    "i": {"j": {"k": {"l": "m"}}},
+}
 
 
 def test_cov():
