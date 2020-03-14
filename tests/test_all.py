@@ -17,3 +17,5 @@ def test_cov():
         pass
     for _ in t.dfs(t.root):
         pass
+    assert t.get_node("e")
+    assert t.get_node("not existed") is None

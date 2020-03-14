@@ -38,6 +38,8 @@ import queue
 class Node(object):
     def __init__(self, name: str, parent_name: str, depth: int, *_, **__):
         self.name: str = name
+        # avoid recursive function calling
+        # so use string, not an object
         self.parent_name: str = parent_name
         self.depth: int = depth
 
@@ -69,6 +71,13 @@ class Compiler(object):
 class Tree(object):
     def __init__(self, root: Node):
         self.root: Node = root
+
+    def get_node(self, name: str) -> typing.Optional[Node]:
+        for each in self.dfs(self.root):
+            if each.name == name:
+                return each
+        # not found
+        return None
 
     def dfs(self, from_node: Node):
         # depth first
