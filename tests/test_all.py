@@ -15,7 +15,7 @@ def test_cov():
     t = Tree(ret)
     for _ in t.bfs(t.root):
         pass
-    for _ in t.dfs(t.root):
+    for _ in t.loop_from_root():
         pass
     assert t.get_node("e")
     assert t.get_node("not existed") is None

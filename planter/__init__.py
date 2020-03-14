@@ -73,11 +73,14 @@ class Tree(object):
         self.root: Node = root
 
     def get_node(self, name: str) -> typing.Optional[Node]:
-        for each in self.dfs(self.root):
+        for each in self.loop_from_root():
             if each.name == name:
                 return each
         # not found
         return None
+
+    def loop_from_root(self):
+        return self.dfs(self.root)
 
     def dfs(self, from_node: Node):
         # depth first
