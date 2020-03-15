@@ -30,19 +30,24 @@ __URL__ = r"https://github.com/williamfzc/planter"
 __VERSION__ = r"0.1.0"
 __DESCRIPTION__ = r"compile dict (json/yaml/toml/everything) to tree"
 
-
 import typing
 import queue
 
 
 class Node(object):
-    def __init__(self, name: str, parent_name: str, depth: int, *_, **__):
+    def __init__(self, name: str, parent: "Node" = None, *_, **__):
         self.name: str = name
         # avoid recursive function calling
         # so use string, not an object
-        self.parent_name: str = parent_name
-        self.depth: int = depth
+        if parent:
+            self.parent_name: str = parent.name if parent else ""
+            self.path: typing.List[str] = [*parent.path, self.name]
+        else:
+            self.parent_name: str = ""
+            self.path: typing.List[str] = [self.name]
+        self.depth: int = len(self.path)
 
+        # init
         self.sub_nodes: typing.List[Node] = []
 
 
@@ -52,20 +57,20 @@ class Compiler(object):
 
     def compile(self, data: dict) -> Node:
         def _compile(
-            cur_data: dict, depth: int, cur_name: str, parent_name: str = None
+                cur_data: dict, cur_name: str, parent: Node = None
         ) -> Node:
-            cur_node = self.NODE_KLS(cur_name, parent_name, depth)
+            cur_node = self.NODE_KLS(cur_name, parent)
             for k, v in cur_data.items():
                 # node
                 if isinstance(v, dict):
-                    sub_node = _compile(v, depth + 1, k, cur_name)
+                    sub_node = _compile(v, k, cur_node)
                     cur_node.sub_nodes.append(sub_node)
                 # kwargs
                 else:
                     cur_node.__dict__[k] = v
             return cur_node
 
-        return _compile(data, 0, self.ROOT_NODE_NAME, None)
+        return _compile(data, self.ROOT_NODE_NAME, None)
 
 
 class Tree(object):
