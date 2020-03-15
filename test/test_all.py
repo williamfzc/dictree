@@ -19,3 +19,7 @@ def test_cov():
         pass
     assert t.get_node("e")
     assert t.get_node("not existed") is None
+    assert t.get_node_by_path(["root", "a", "b"])
+    assert t.get_node_by_path(["a", "b"])
+    assert t.get_nodes_by_name("b")
+    assert isinstance(t.flatten(), list)

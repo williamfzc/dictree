@@ -51,38 +51,39 @@ class Node(object):
         self.sub_nodes: typing.List[Node] = []
 
 
-class Compiler(object):
-    NODE_KLS: typing.Type[Node] = Node
-    ROOT_NODE_NAME: str = "root"
-
-    def compile(self, data: dict) -> Node:
-        def _compile(
-                cur_data: dict, cur_name: str, parent: Node = None
-        ) -> Node:
-            cur_node = self.NODE_KLS(cur_name, parent)
-            for k, v in cur_data.items():
-                # node
-                if isinstance(v, dict):
-                    sub_node = _compile(v, k, cur_node)
-                    cur_node.sub_nodes.append(sub_node)
-                # kwargs
-                else:
-                    cur_node.__dict__[k] = v
-            return cur_node
-
-        return _compile(data, self.ROOT_NODE_NAME, None)
-
-
 class Tree(object):
     def __init__(self, root: Node):
         self.root: Node = root
 
-    def get_node(self, name: str) -> typing.Optional[Node]:
+    def get_node_by_name(self, name: str) -> typing.Optional[Node]:
+        result = self.get_nodes_by_name(name)
+        if not result:
+            return None
+        return result[0]
+
+    def get_nodes_by_name(self, name: str) -> typing.List[Node]:
+        result = []
         for each in self.loop_from_root():
             if each.name == name:
+                result.append(each)
+        return result
+
+    def get_node_by_path(self, path: typing.List[str]) -> typing.Optional[Node]:
+        # path is unique
+        for each in self.loop_from_root():
+            # ignore root
+            if (each.path == path) or (each.path[1:] == path):
                 return each
         # not found
         return None
+
+    # alias
+    get_node = get_node_by_name
+
+    def flatten(self, order: typing.Callable = None) -> typing.List[Node]:
+        if not order:
+            order = self.dfs
+        return list(order(self.root))
 
     def loop_from_root(self):
         return self.dfs(self.root)
@@ -113,3 +114,30 @@ class Tree(object):
             tmp = queue.Queue()
             yield from _clear(q, tmp)
             q = tmp
+
+
+class Compiler(object):
+    NODE_KLS: typing.Type[Node] = Node
+    TREE_KLS: typing.Type[Tree] = Tree
+    ROOT_NODE_NAME: str = "root"
+
+    def compile2node(self, data: dict) -> Node:
+        def _compile(cur_data: dict, cur_name: str, parent: Node = None) -> Node:
+            cur_node = self.NODE_KLS(cur_name, parent)
+            for k, v in cur_data.items():
+                # node
+                if isinstance(v, dict):
+                    sub_node = _compile(v, k, cur_node)
+                    cur_node.sub_nodes.append(sub_node)
+                # kwargs
+                else:
+                    cur_node.__dict__[k] = v
+            return cur_node
+
+        return _compile(data, self.ROOT_NODE_NAME, None)
+
+    def compile2tree(self, data: dict) -> Tree:
+        return self.TREE_KLS(self.compile(data))
+
+    # alias
+    compile = compile2node
