@@ -27,3 +27,4 @@ def test_cov():
 
     new_t = c.compile2tree(data)
     assert new_t.get_node("e").path == t.get_node("e").path
+    assert t.get_node_by_name("a") is t.get_parent_node(t.get_node_by_name("b"))

@@ -77,6 +77,9 @@ class Tree(object):
         # not found
         return None
 
+    def get_parent_node(self, son: Node) -> Node:
+        return self.get_node_by_path(son.path[:-1])
+
     # alias
     get_node = get_node_by_name
 
