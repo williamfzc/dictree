@@ -4,7 +4,7 @@ from planter import Compiler, Tree
 data = {
     "a": {"b": {"e": {"x": {"y": {"z": "ok"}}}}, "c": "d"},
     "g": "h",
-    "i": {"j": {"k": {"l": "m"}}},
+    "i": {"j": {"k": {"l": "m"}, "y": [{"n": "ojbk"}, "kkk"]}},
 }
 
 
@@ -23,3 +23,7 @@ def test_cov():
     assert t.get_node_by_path(["a", "b"])
     assert t.get_nodes_by_name("b")
     assert isinstance(t.flatten(), list)
+    assert not t.get_node_by_path(["unknown"])
+
+    new_t = c.compile2tree(data)
+    assert new_t.get_node("e").path == t.get_node("e").path
