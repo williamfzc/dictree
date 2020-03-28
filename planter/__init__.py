@@ -129,6 +129,11 @@ class Compiler(object):
                 if isinstance(v, dict):
                     sub_node = _compile(v, k, cur_node)
                     cur_node.sub_nodes.append(sub_node)
+                # todo: maybe not a good design. it is trying to compile everything.
+                elif isinstance(v, (list, tuple)):
+                    for each in v:
+                        sub_node = _compile(each, k, cur_node)
+                        cur_node.sub_nodes.append(sub_node)
                 # kwargs
                 else:
                     cur_node.__dict__[k] = v
