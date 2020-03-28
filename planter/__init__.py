@@ -121,7 +121,7 @@ class Compiler(object):
     TREE_KLS: typing.Type[Tree] = Tree
     ROOT_NODE_NAME: str = "root"
 
-    def compile2node(self, data: dict) -> Node:
+    def compile2node(self, data: dict) -> NODE_KLS:
         def _compile(cur_data: dict, cur_name: str, parent: Node = None) -> Node:
             cur_node = self.NODE_KLS(cur_name, parent)
             for k, v in cur_data.items():
@@ -141,7 +141,7 @@ class Compiler(object):
 
         return _compile(data, self.ROOT_NODE_NAME, None)
 
-    def compile2tree(self, data: dict) -> Tree:
+    def compile2tree(self, data: dict) -> TREE_KLS:
         return self.TREE_KLS(self.compile(data))
 
     # alias
