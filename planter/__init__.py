@@ -121,7 +121,7 @@ class Compiler(object):
     TREE_KLS: typing.Type[Tree] = Tree
     ROOT_NODE_NAME: str = "root"
 
-    def compile2node(self, data: dict) -> NODE_KLS:
+    def compile2node(self, data: dict) -> "NODE_KLS":
         def _compile(cur_data: dict, cur_name: str, parent: Node = None) -> Node:
             cur_node = self.NODE_KLS(cur_name, parent)
             for k, v in cur_data.items():
@@ -132,6 +132,9 @@ class Compiler(object):
                 # todo: maybe not a good design. it is trying to compile everything.
                 elif isinstance(v, (list, tuple)):
                     for each in v:
+                        # only compile dict!
+                        if not isinstance(each, dict):
+                            continue
                         sub_node = _compile(each, k, cur_node)
                         cur_node.sub_nodes.append(sub_node)
                 # kwargs
@@ -141,7 +144,7 @@ class Compiler(object):
 
         return _compile(data, self.ROOT_NODE_NAME, None)
 
-    def compile2tree(self, data: dict) -> TREE_KLS:
+    def compile2tree(self, data: dict) -> "TREE_KLS":
         return self.TREE_KLS(self.compile(data))
 
     # alias
