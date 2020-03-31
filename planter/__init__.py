@@ -27,7 +27,7 @@ __AUTHOR__ = r"williamfzc"
 __AUTHOR_EMAIL__ = r"fengzc@vip.qq.com"
 __LICENSE__ = r"MIT"
 __URL__ = r"https://github.com/williamfzc/planter"
-__VERSION__ = r"0.2.1"
+__VERSION__ = r"0.2.2"
 __DESCRIPTION__ = r"compile dict (json/yaml/toml/everything) to tree"
 
 import typing
