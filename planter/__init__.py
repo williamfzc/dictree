@@ -137,7 +137,8 @@ class Compiler(object):
                     for each in v:
                         # only compile dict!
                         if not isinstance(each, dict):
-                            continue
+                            cur_node.__dict__[k] = v
+                            break
                         sub_node = _compile(each, k, cur_node)
                         cur_node.sub_nodes.append(sub_node)
                 # kwargs
